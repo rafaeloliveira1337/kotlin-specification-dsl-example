@@ -1,5 +1,7 @@
 package br.com.rafaelmo.kotlinspecificationdslexample.controller
 
+import br.com.rafaelmo.kotlinspecificationdslexample.queryobject.CustomerQueryObject
+import br.com.rafaelmo.kotlinspecificationdslexample.queryobject.toSpecification
 import br.com.rafaelmo.kotlinspecificationdslexample.service.CustomerService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -28,15 +30,17 @@ internal class CustomerControllerTest {
         // GIVEN
         val page = 0
         val pageSize = 50
+        val lastName = "Williams"
+        val queryObject = CustomerQueryObject(lastName = lastName)
 
         // WHEN
         val perform = mockMvc.perform(
-            get("/customers?page=$page&pageSize=$pageSize")
+            get("/customers?page=$page&pageSize=$pageSize&lastName=$lastName")
                 .accept(MediaType.APPLICATION_JSON)
         )
 
         // THEN
         perform.andExpect(status().isOk)
-        verify(customerService).getCustomers(page, pageSize)
+        verify(customerService).getCustomers(customerQueryObject = queryObject, page = page, pageSize = pageSize)
     }
 }

@@ -1,10 +1,10 @@
 package br.com.rafaelmo.kotlinspecificationdslexample.service
 
 import br.com.rafaelmo.kotlinspecificationdslexample.domainobject.Customer
+import br.com.rafaelmo.kotlinspecificationdslexample.queryobject.CustomerQueryObject
 import br.com.rafaelmo.kotlinspecificationdslexample.repository.CustomerRepository
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.given
-import org.hamcrest.Matchers.any
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -13,6 +13,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 
 @ExtendWith(MockitoExtension::class)
 class CustomerServiceTest {
@@ -29,16 +30,41 @@ class CustomerServiceTest {
         val page = 0
         val pageSize = 50
         val customers = listOf(
-            Customer(id = 1, firstName = "John", lastName = "Doe", car = null)
+            Customer(id = 1, firstName = "John", lastName = "Doe", age = 32, car = null)
         )
         val pageResult = PageImpl(customers)
+        val queryObject = CustomerQueryObject()
 
-        given(customerRepository.findAll(any<Pageable>())).willReturn(pageResult)
+        given(customerRepository.findAll(any<Specification<Customer>>(), any<Pageable>())).willReturn(pageResult)
 
         // WHEN
-        val fetchedCustomers = customerService.getCustomers(page, pageSize)
+        val fetchedCustomers = customerService.getCustomers(customerQueryObject = queryObject, page = page, pageSize = pageSize)
 
         // THEN
-        assertEquals(1, fetchedCustomers.size)
+        assertEquals(1, fetchedCustomers.customers.size)
+    }
+
+    @Test
+    fun `should fetch customer data filtering by last name`() {
+        // GIVEN
+        val page = 0
+        val pageSize = 50
+        val customers = listOf(
+            Customer(id = 1, firstName = "John", lastName = "Doe", age = 32, car = null),
+            Customer(id = 2, firstName = "Marybeth", lastName = "Williams", age = 32, car = null),
+            Customer(id = 3, firstName = "Edward", lastName = "Williams", age = 32, car = null)
+        )
+        val customersNamedWilliams = customers.filter { it.lastName == "Williams"}
+
+        val pageResult = PageImpl(customersNamedWilliams)
+        val queryObject = CustomerQueryObject(lastName = "Williams")
+
+        given(customerRepository.findAll(any<Specification<Customer>>(), any<Pageable>())).willReturn(pageResult)
+
+        // WHEN
+        val fetchedCustomers = customerService.getCustomers(customerQueryObject = queryObject, page = page, pageSize = pageSize)
+
+        // THEN
+        assertEquals(2, fetchedCustomers.customers.size)
     }
 }

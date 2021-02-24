@@ -21,6 +21,9 @@ class Customer(
     @Column
     val lastName: String,
 
+    @Column
+    val age: Int,
+
     @OneToOne
     @JoinColumn(name = "car_id")
     val car: Car?
