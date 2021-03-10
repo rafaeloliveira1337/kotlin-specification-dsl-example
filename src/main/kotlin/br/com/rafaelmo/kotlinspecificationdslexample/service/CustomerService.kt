@@ -1,5 +1,6 @@
 package br.com.rafaelmo.kotlinspecificationdslexample.service
 
+import au.com.console.jpaspecificationdsl.equal
 import br.com.rafaelmo.kotlinspecificationdslexample.clientmodel.CustomerResponse
 import br.com.rafaelmo.kotlinspecificationdslexample.domainobject.Customer
 import br.com.rafaelmo.kotlinspecificationdslexample.mapper.toCustomerDTO
@@ -25,7 +26,6 @@ class CustomerService(
             totalPages = customers.totalPages,
             customers = customers.content
         )
-
     }
 
 }

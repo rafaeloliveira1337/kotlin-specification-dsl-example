@@ -1,6 +1,7 @@
 package br.com.rafaelmo.kotlinspecificationdslexample.controller
 
 import br.com.rafaelmo.kotlinspecificationdslexample.clientmodel.CustomerResponse
+import br.com.rafaelmo.kotlinspecificationdslexample.exception.InvalidAgeRangeException
 import br.com.rafaelmo.kotlinspecificationdslexample.queryobject.CustomerQueryObject
 import br.com.rafaelmo.kotlinspecificationdslexample.service.CustomerService
 import org.springframework.web.bind.annotation.GetMapping
@@ -29,7 +30,7 @@ class CustomerController(
 
         var ageRange: List<Int>? = emptyList()
         if (minAge != null && maxAge != null) {
-            if (maxAge < minAge) throw IllegalArgumentException("minAge cannot be greater than maxAge")
+            if (maxAge < minAge) throw InvalidAgeRangeException("minAge cannot be greater than maxAge")
 
             ageRange = (minAge..maxAge).toList()
         }
