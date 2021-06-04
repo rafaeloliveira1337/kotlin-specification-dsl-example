@@ -13,7 +13,7 @@ data class CustomerQueryObject(
     val lastName: String? = null,
     val carModel: String? = null,
     val carManufacturer: String? = null,
-    val ageRange: List<Int>? = null,
+    val ageRange: List<Int>? = emptyList(),
     val hasCar: Boolean? = null,
 )
 

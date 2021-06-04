@@ -12,6 +12,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
 
@@ -34,11 +35,12 @@ class CustomerServiceTest {
         )
         val pageResult = PageImpl(customers)
         val queryObject = CustomerQueryObject()
+        val pageable = PageRequest.of(page, pageSize)
 
         given(customerRepository.findAll(any<Specification<Customer>>(), any<Pageable>())).willReturn(pageResult)
 
         // WHEN
-        val fetchedCustomers = customerService.getCustomers(customerQueryObject = queryObject, page = page, pageSize = pageSize)
+        val fetchedCustomers = customerService.getCustomers(customerQueryObject = queryObject, pageable = pageable)
 
         // THEN
         assertEquals(1, fetchedCustomers.customers.size)
@@ -58,11 +60,12 @@ class CustomerServiceTest {
 
         val pageResult = PageImpl(customersNamedWilliams)
         val queryObject = CustomerQueryObject(lastName = "Williams")
+        val pageable = PageRequest.of(page, pageSize)
 
         given(customerRepository.findAll(any<Specification<Customer>>(), any<Pageable>())).willReturn(pageResult)
 
         // WHEN
-        val fetchedCustomers = customerService.getCustomers(customerQueryObject = queryObject, page = page, pageSize = pageSize)
+        val fetchedCustomers = customerService.getCustomers(customerQueryObject = queryObject, pageable = pageable)
 
         // THEN
         assertEquals(2, fetchedCustomers.customers.size)

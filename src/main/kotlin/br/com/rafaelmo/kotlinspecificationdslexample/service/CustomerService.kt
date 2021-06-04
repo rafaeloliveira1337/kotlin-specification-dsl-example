@@ -8,6 +8,7 @@ import br.com.rafaelmo.kotlinspecificationdslexample.queryobject.CustomerQueryOb
 import br.com.rafaelmo.kotlinspecificationdslexample.queryobject.toSpecification
 import br.com.rafaelmo.kotlinspecificationdslexample.repository.CustomerRepository
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,10 +16,8 @@ class CustomerService(
     private val customerRepository: CustomerRepository
 ) {
 
-    fun getCustomers(customerQueryObject: CustomerQueryObject, page: Int, pageSize: Int): CustomerResponse {
-        val pageRequest = PageRequest.of(page, pageSize)
-
-        val customers = customerRepository.findAll(customerQueryObject.toSpecification(), pageRequest)
+    fun getCustomers(customerQueryObject: CustomerQueryObject, pageable: Pageable): CustomerResponse {
+        val customers = customerRepository.findAll(customerQueryObject.toSpecification(), pageable)
             .map(Customer::toCustomerDTO)
 
         return CustomerResponse(
